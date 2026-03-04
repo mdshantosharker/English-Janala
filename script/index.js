@@ -8,6 +8,7 @@ const removeActive = () => {
   const lessonButtons = document.querySelectorAll(".lesson-btn");
   lessonButtons.forEach((btn) => btn.classList.remove("active"));
 };
+
 const loadLevelWord = (id) => {
   const url = `https://openapi.programming-hero.com/api/level/${id}`;
   fetch(url)
@@ -19,6 +20,51 @@ const loadLevelWord = (id) => {
       clickBtn.classList.add("active");
       displayLevelWord(data.data);
     });
+};
+
+const loadWordDetail = async (id) => {
+  const url = `https://openapi.programming-hero.com/api/word/${id}`;
+  const res = await fetch(url);
+  const details = await res.json();
+  displayWordDetails(details);
+};
+
+const displayWordDetails = (word) => {
+  const detailsContainer = document.getElementById("details-container");
+  detailsContainer.innerHTML = `
+  <h3 class="text-[36px] font-semibold  text-[#000000] mb-5">${
+    word.data.word
+  } (<i class="fa-solid fa-microphone-lines"></i> :${
+    word.data.pronunciation
+  })!</h3>
+  <p class="font-semibold text-[24px] ">Meaning</p>
+  <p class="text-[24px] hind-siliguri-regular  mb-6">${word.data.meaning !== null ? word.data.meaning : "অর্থ পাওয়া যায়নি"}
+</p>
+  <p class="font-semibold text-[24px]">Example</p>
+  <p class="font-semibold text-[18px] text-[#00000080] mb-6">${
+    word.data.sentence
+  }</p>
+
+  <p class=" text-[24px] hind-siliguri-regular text-[#000000]">সমার্থক শব্দ গুলো</p>
+  <div>
+    
+  ${word?.data?.synonyms
+    ?.map(
+      (item) => `<button class="btn mt-3 mr-3 bg-[#EDF7FF]">${item}</button>`,
+    )
+    .join(" ")}
+  </div>
+</div>
+
+<div class="mt-5">
+  <form method="dialog">
+    
+    <button class="btn btn-primary">Complete Learning</button>
+  </form>
+</div>
+</div>
+  `;
+  document.getElementById("my_modal").showModal();
 };
 
 const displayLevelWord = (words) => {
@@ -42,7 +88,7 @@ const displayLevelWord = (words) => {
 
         <div class="font-medium text-2xl bangla-fonts">"${word.meaning ? word.meaning : "অর্থহীন"}/ ${word.pronunciation ? word.pronunciation : "প্রণাঊন্সিয়েশন পাওয়া যায়নি"}"</div>
         <div class="flex justify-between items-center">
-          <button onclick="my_modal_5.showModal()" class="btn bg-[#1A91FF1A] hover:bg-[#52a3ee]">
+          <button onclick="loadWordDetail(${word.id})" class="btn bg-[#1A91FF1A] hover:bg-[#52a3ee]">
             <i class="fa-solid fa-circle-info"></i>
           </button>
           <button class="btn bg-[#1A91FF1A] hover:bg-[#52a3ee]">
