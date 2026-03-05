@@ -1,3 +1,13 @@
+const manageSpinner = (status) => {
+  if (status == true) {
+    document.getElementById("spinner").classList.remove("hidden");
+    document.getElementById("word-container").classList.add("hidden");
+  } else {
+    document.getElementById("word-container").classList.remove("hidden");
+    document.getElementById("spinner").classList.add("hidden");
+  }
+};
+
 const loadLesson = () => {
   fetch("https://openapi.programming-hero.com/api/levels/all")
     .then((res) => res.json())
@@ -10,6 +20,7 @@ const removeActive = () => {
 };
 
 const loadLevelWord = (id) => {
+  manageSpinner(true);
   const url = `https://openapi.programming-hero.com/api/level/${id}`;
   fetch(url)
     .then((res) => res.json())
@@ -77,6 +88,7 @@ const displayLevelWord = (words) => {
               <h1 class="hind-siliguri-regular text-[13px] text-center">এই Lesson এ এখনো কোন Vocabulary যুক্ত করা হয়নি।</h1>
               <h1 class="hind-siliguri-regular text-[32px] text-[#292524] text-center">নেক্সট Lesson এ যান</h1>
              </div>`;
+    manageSpinner(false);
     return;
   }
   words.forEach((word) => {
@@ -86,7 +98,7 @@ const displayLevelWord = (words) => {
         <h2 class="font-bold text-2xl">${word.word ? word.word : "শব্দ পাওয়া যায়নি"}</h2>
         <p class="font-semibold">Meaning /Pronounciation </p>
 
-        <div class="font-medium text-2xl bangla-fonts">"${word.meaning ? word.meaning : "অর্থহীন"}/ ${word.pronunciation ? word.pronunciation : "প্রণাঊন্সিয়েশন পাওয়া যায়নি"}"</div>
+        <div class="font-medium  bangla-fonts">"${word.meaning ? word.meaning : "অর্থহীন"}/ ${word.pronunciation ? word.pronunciation : "প্রণাঊন্সিয়েশন পাওয়া যায়নি"}"</div>
         <div class="flex justify-between items-center">
           <button onclick="loadWordDetail(${word.id})" class="btn bg-[#1A91FF1A] hover:bg-[#52a3ee]">
             <i class="fa-solid fa-circle-info"></i>
@@ -99,6 +111,7 @@ const displayLevelWord = (words) => {
     `;
     wordContainer.append(card);
   });
+  manageSpinner(false);
 };
 
 const displayAllLesson = (lessons) => {
